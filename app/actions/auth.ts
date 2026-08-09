@@ -70,7 +70,7 @@ async function createNewSession(userId: number) {
     })
 }
 
-export async function register(previousState: AuthState, formData: FormData): Promise<AuthState> {
+export async function register(formData: FormData): Promise<AuthState> {
     const validation = await registerSchema.safeParseAsync({name: formData.get("name"), email: formData.get("email"), password: formData.get("password")})
 
     if (!validation.success) {
@@ -129,7 +129,7 @@ export async function register(previousState: AuthState, formData: FormData): Pr
     redirect("/dashboard")
 }
 
-export async function login(previousState: AuthState, formData: FormData): Promise<AuthState> {
+export async function login(formData: FormData): Promise<AuthState> {
     const validation = await loginSchema.safeParseAsync({email: formData.get("email"), password: formData.get("password")})
     if (!validation.success) {
         const errors = z.flattenError(validation.error).fieldErrors
