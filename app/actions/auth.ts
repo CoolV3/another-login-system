@@ -53,7 +53,7 @@ async function createNewSession(userId: number) {
     const tokenHash = createHash("sha256").update(token).digest("hex")
     const expiresAt = new Date(Date.now() + sessionDuration)
 
-    prisma.session.create({
+    await prisma.session.create({
         data: {
             token: tokenHash,
             userId,
@@ -159,6 +159,7 @@ export async function login(formData: FormData): Promise<AuthState> {
     if (!isPasswordValid) {return {success: false, message: "Invalid email address or password"}}
 
     await createNewSession(user.id)
+
     redirect("/dashboard")
 }
 
