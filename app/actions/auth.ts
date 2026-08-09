@@ -165,7 +165,7 @@ export async function login(formData: FormData): Promise<AuthState> {
 
 export async function logout(): Promise<void> {
     const cookie = await cookies()
-    const token = cookie.get("session")?.value
+    const token = cookie.get("sessionToken")?.value
     if (token) {
         const tokenHash = createHash("sha256").update(token).digest("hex")
         await prisma.session.deleteMany({
@@ -174,8 +174,8 @@ export async function logout(): Promise<void> {
             }
         })
     }
-    cookie.delete("session")
-    redirect("login")
+    cookie.delete("sessionToken")
+    redirect("/login")
 }
 
 
