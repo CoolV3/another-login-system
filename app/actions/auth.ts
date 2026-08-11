@@ -6,7 +6,7 @@ import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import { createHash, randomBytes} from "node:crypto";
 
-const sessionDuration = 1000 * 60 * 60 * 24 * 7;
+const sessionDuration = 1000 * 60 * 60 * 24 * 7
 
 export type AuthState = {
     success?: boolean

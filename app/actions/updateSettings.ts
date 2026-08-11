@@ -17,6 +17,7 @@ export type UpdateState = {
         name?: string[]
         email?: string[]
         password?: string[]
+        newPassword?: string[]
     }
 }
 
@@ -33,6 +34,15 @@ const updateScheme = z.object({
         .toLowerCase()
         .min(4, "Your email is too short. Please use At least 4 characters.")
         .max(100, "Your email is too long. You may not use more than 100 characters"),
+})
+
+const passwordUpdateSchema = z.object({
+    oldPassword: z.string(),
+    newPassword: z
+        .string()
+        .min(8, "Your new password must contain at least 8 characters")
+        .regex(/[a-z]/, "Your new password must contain at least one lowercase letter")
+        .regex(/[A-Z]/, "Your new password must contain at least one uppercase letter")
 })
 
 
@@ -94,6 +104,75 @@ export async function updateNameEmail(FormData: FormData): Promise<UpdateState> 
 
     revalidatePath("/dashboard")
     revalidatePath("/dashboard/settings/general")
+
+    return {
+        success: true,
+        message: "Successfully updated your Account."
+    }
+
+}
+
+export async function updatePassword(FormData: FormData): Promise<UpdateState> {
+    const validation = await passwordUpdateSchema.safeParseAsync({oldPassword: FormData.get("oldPassword"), newPassword : FormData.get("newPassword")})
+
+    if (!validation.success) {
+        const errors = z.flattenError(validation.error).fieldErrors
+        return {
+            success: false,
+            message: "Please correct the fields",
+            errors: {
+                password: errors.oldPassword,
+                newPassword: errors.newPassword
+            }
+        }
+    }
+
+    const { oldPassword, newPassword } = validation.data
+
+    const user = await getCurrentUser()
+
+    if (!user) {return ({success: false, message: "Please log in first"})}
+    const email = user.email
+
+    const userOldPasswordHash = await prisma.user.findUnique({
+        where: {
+            email,
+        },
+        select: {
+            hashedPassword: true
+        }
+    })
+
+    if (userOldPasswordHash == null) {
+        return ({success: false, message: "Please log in first"})
+    }
+
+    const verify = await argon2.verify(userOldPasswordHash.hashedPassword, oldPassword)
+
+    if (!verify) {
+        return {
+            success: false,
+            message: "Your old password is wrong",
+            errors: { password: ["Wrong password"]}
+        }
+    }
+    const newHashedPassword = await argon2.hash(newPassword, {type: argon2id})
+
+    try {
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                hashedPassword: newHashedPassword
+            }
+        })
+    } catch(e) {
+        return {
+            success: false,
+            message: "Error while updating your Account",
+        }
+    }
 
     return {
         success: true,
