@@ -2,7 +2,7 @@
 import argon2, {argon2id} from "argon2"
 import {z} from "zod"
 import {prisma} from "@/lib/prisma";
-import {cookies} from "next/headers";
+import {cookies, headers} from "next/headers";
 import {redirect} from "next/navigation";
 import { createHash, randomBytes} from "node:crypto";
 
@@ -52,12 +52,15 @@ async function createNewSession(userId: number) {
     const token = randomBytes(32).toString("hex")
     const tokenHash = createHash("sha256").update(token).digest("hex")
     const expiresAt = new Date(Date.now() + sessionDuration)
+    const requestHeaders = await headers()
+    const userAgent = requestHeaders.get("user-agent")
 
     await prisma.session.create({
         data: {
             token: tokenHash,
             userId,
-            expiresAt
+            expiresAt,
+            userAgent
         }
     })
 
