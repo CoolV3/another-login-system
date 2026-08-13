@@ -47,3 +47,4 @@ dist/
 
 
 .idea
+/pnpm-workspace.yaml
