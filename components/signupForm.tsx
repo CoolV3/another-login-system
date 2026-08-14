@@ -2,6 +2,7 @@
 
 import {register} from "@/app/actions/auth";
 import {SubmitEventHandler, useState} from "react";
+import Link from "next/link";
 
 
 
@@ -50,7 +51,7 @@ export default function SignupForm() {
     return(
         <div className="flex items-center justify-center h-screen">
             <div className="bg-gray-50 p-10 rounded-2xl">
-                <h1 className="text-5xl text-center pb-10">Login</h1>
+                <h1 className="text-5xl text-center pb-10">Sign Up</h1>
                 <form className="flex flex-col gap-10" onSubmit={handleLogin}>
                     <div className="flex flex-col gap-5">
                         <div>
@@ -74,6 +75,7 @@ export default function SignupForm() {
                         {generalError && (<p className="text-red-600 text-center">{generalError}</p>)}
                     </div>
                 </form>
+                <p className="text-black flex gap-4 pt-3 text-center">Already have an account?{<Link className="text-blue-900" href="/login">Log In</Link>}</p>
             </div>
         </div>
     )

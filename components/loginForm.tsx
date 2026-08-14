@@ -2,6 +2,7 @@
 
 import {login} from "@/app/actions/auth";
 import {SubmitEventHandler, useState} from "react";
+import Link from "next/link";
 
 
 
@@ -61,6 +62,7 @@ export default function LoginForm() {
                         {generalError && (<p className="text-red-600 text-center">{generalError}</p>)}
                     </div>
                 </form>
+                <p className="text-black flex gap-4 pt-3 text-center">Not signed up yet?{<Link className="text-blue-900" href="/signup">Sign Up</Link>}</p>
             </div>
         </div>
     )
