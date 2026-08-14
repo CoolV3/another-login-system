@@ -1,38 +1,53 @@
-# WorkInProgress
+# Another Login System
+
+## What is it?
+This is a template for a simple login and sign up system. And please just use it for small projects because its not production ready.
 
 
 
-## Getting Started
+## Features
+This project contains a login and sign up system and an account settings page. 
+Its located under `/dashboard/settings`. There you can change your email and name, view all your active sessions, and change your password.
 
-First, run the development server:
 
+
+## How to integrate with your own application
+First clone the repository with 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/CoolV3/another-login-system
+cd another-login-system
+```
+Install all dependencies with
+```bash
+pnpm install
+```
+After that edit the file `env.example`. Fill in there your postgresql database connection. Then rename the file to `.env`.
+Then run the following commands to sync your database with prisma.
+```bash
+pnpm dlx prisma migrate deploy
+pnpm dlx prisma generate
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then you can build your application on top. You can get information about the user with the function `getCurrentUser()`.
+This function returns the userId, Email, and Name from the current User.
+One session is active for 7 days by default. You can customize the time in the file `/app/actions/auth.ts` under the variable `sessionDuration`.
+The Route `/dashboard` and all subroutes are only accessible when the user is logged in. In `/dashboard` you can build your custom application that needs auth.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Then run the development server with:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm dev
+```
 
-## Learn More
+Then open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
+- Next.js Framework
+- Database: Prisma v7 with Postgresql
+- Argon2ID for password hashing
+- TailwindCSS for styling
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Why I built it?
+Because I wanted to learn more about Databases with next.js and how prisma works.
